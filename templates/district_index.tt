@@ -4,14 +4,32 @@
 [% INCLUDE header.tt %]
 
 <div id="pub_list_no_map">
+
+  <div class="pub_table_key">
+    <table>
+      <tr><th class="status open"><span>O</span></th><td>= open</td></tr>
+      <tr><th class="status closed"><span>C</span></th><td>= closed</td></tr>
+      <tr><th class="status demolished"><span>D</span></th>
+          <td>= demolished</td></tr>
+    </table>
+  </div>
+
   <p>Pubs in [% postal_district | html %]
      (<a href="[% map_url %]">view them on a map</a>):</p>
+
   <table class="postal_district_pub_list">
     <tr>
-      <th>Name</th><th>Former name(s)</th><th>Address</th>
+      <th></th><th>Name</th><th>Former name(s)</th><th>Address</th>
     </tr>
     [% FOREACH pub = pubs %]
       <tr>
+        [% IF pub.demolished %]
+          <td class="status demolished"><span>D</span></td>
+        [% ELSIF pub.closed %]
+          <td class="status closed"><span>C</span></td>
+        [% ELSE %]
+          <td class="status open"><span>O</span></td>
+        [% END %]
         <td><a href="[% base_url %]pubs/[% pub.id | html %].html">[% pub.name | html %]</a></td>
         <td>[% IF pub.alt_name %][% pub.alt_name | html %][% END %]</td>
         <td>[% pub.address | html %]</td>
