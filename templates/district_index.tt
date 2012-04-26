@@ -6,7 +6,7 @@
 <div id="pub_list_no_map">
   <p>Pubs in [% postal_district | html %]
      (<a href="[% map_url %]">view them on a map</a>):</p>
-  <table>
+  <table class="postal_district_pub_list">
     <tr>
       <th>Name</th><th>Former name(s)</th><th>Address</th>
     </tr>

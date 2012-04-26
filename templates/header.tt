@@ -11,28 +11,14 @@
     <link rel="stylesheet" href="http://code.leafletjs.com/leaflet-0.3.1/leaflet.ie.css" />
   <![endif]-->
 
-  [% IF do_map OR is_admin_page %]
-    <script type="text/javascript" 
+  <script type="text/javascript" 
       src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"> 
-    </script>
-  [% END %]
+  </script>
+  <script type="text/javascript" src="[% base_url %]js/pubology.js"></script>
 
   [% IF do_map %]
     <script src="http://code.leafletjs.com/leaflet-0.3.1/leaflet.js"></script>
-    [% IF use_gmaps %]
-      <script type="text/javascript"
-       src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;region=GB">
-      </script>
-      <script type="text/javascript"
-              src="[% base_url %]js/leaflet-google.js"></script>
-    [% END %]
-    <script type="text/javascript"
-            src="http://www.pubology.co.uk/js/map.js"></script>
-  [% END %]
-
-  [% IF is_admin_page %]
-    <script type="text/javascript"
-            src="http://www.pubology.co.uk/js/admin.js"></script>
+    <script type="text/javascript" src="[% base_url %]js/map.js"></script>
   [% END %]
 
 </head>

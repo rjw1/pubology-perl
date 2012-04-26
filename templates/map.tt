@@ -5,11 +5,14 @@
 [% subtitle = postal_district | html %]
 [% INCLUDE header.tt %]
 
-<p>green = open, yellow = closed, red = demolished</p>
-
 <div id="map_canvas"></div>
 
 <div id="pub_list">
+
+  <div id="map_key">
+  <p>green = open, yellow = closed, red = demolished</p>
+  </div>
+
   <p>Pubs in [% postal_district | html %]
      (<a href="[% district_url %]">view without a map</a>):</p>
   <ul>
@@ -35,7 +38,6 @@
 
   centre_lat = [% centre_lat %];
   centre_long = [% centre_long %];
-  use_gmaps = [% use_gmaps %];
 
   function add_markers() {
     var pub;
