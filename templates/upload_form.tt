@@ -10,6 +10,8 @@
   </div>
 [% END %]
 
+<h3>Upload a single CSV file</h3>
+
 <form method="post" enctype="multipart/form-data"
       action="[% cgi_url %]" onSubmit="return reassure()">
 
@@ -20,5 +22,12 @@
   <p id="upload_msg"></p>
 
 </form>
+
+<h3>Regenerate site from stored CSV files</h3>
+
+<p><a href="[% base_url %]data/">View list of stored CSV files</a>.</p>
+
+<p><a href="[% cgi_url %]?action=regenerate">Regenerate site from stored CSV
+files</a> (warning: this may take a while).</p>
 
 [% INCLUDE footer.tt %]
