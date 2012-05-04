@@ -19,13 +19,21 @@
     [% i = 0 %]
     [% FOREACH pub = pubs %]
       [% i = i + 1 %]
-      <li>
+      [% IF pub.demolished %]
+        <li class="demolished">
+      [% ELSIF pub.closed %]
+        <li class="closed">
+      [% ELSE %]
+        <li class="open">
+      [% END %]
+        <span>
         [% IF pub.not_on_map %]
           [% CGI.escapeHTML( pub.name ) %] (not on map &#8212;
           <a href="[% base_url %]pubs/[% pub.id %].html">view pub info</a>)
         [% ELSE %]
           <a href="#" onclick="return show_marker( [% i %] )">[% CGI.escapeHTML( pub.name ) %]</a>
         [% END %]
+        </span>
       </li>
     [% END %]
   </ul>
