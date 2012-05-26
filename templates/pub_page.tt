@@ -33,6 +33,11 @@
         (<a href="http://www.bing.com/maps/default.aspx?cp=[% pub.lat %]~[% pub.long %]&style=c&lvl=15&rtp=~pos.[% pub.lat %]_[% pub.long %]_[% node_name | replace( '\s', '+' ) %]">bingmap</a>)
         (<a href="http://maps.google.co.uk/maps?q=[% pub.lat %],[% pub.long %]&cbll=[% pub.lat %],[% pub.long %]&layer=c&cbp=12,0,,0,5">streetview</a>)
       [% END %]
+      [% IF !pub.location_accurate %]
+        <div class="location_accuracy">
+          Note: The location on the map is approximate.
+        </div>
+      [% END %]
     </td>
   </tr>
   [% IF pub.alt_name %]
