@@ -72,7 +72,7 @@ sub parse_csv {
   my ( $min_lat, $max_lat, $min_long, $max_long );
 
   foreach my $datum ( @data ) {
-    foreach my $key ( qw( closed demolished ) ) {
+    foreach my $key ( qw( closed demolished location_accurate ) ) {
       if ( $datum->{$key} eq "TRUE" ) {
         $datum->{$key} = 1;
       } else {
