@@ -56,6 +56,9 @@
       <li id="twitter_link">
         <a href="http://twitter.com/pubologyblog">Twitter</a>
       </li>
+      <li id="email_link">
+        <a href="mailto:pubologyblog@gmail.com?subject=Pubology">Email</a>
+      </li>
       <li id="rgl_link">
         <a href="http://london.randomness.org.uk/">RGL</a>
       </li>
