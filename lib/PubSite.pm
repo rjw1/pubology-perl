@@ -72,6 +72,7 @@ sub parse_csv {
   my ( $min_lat, $max_lat, $min_long, $max_long );
 
   foreach my $datum ( @data ) {
+    # Sort out the Booleans.
     foreach my $key ( qw( closed demolished location_accurate ) ) {
       if ( $datum->{$key} eq "TRUE" ) {
         $datum->{$key} = 1;
@@ -80,6 +81,10 @@ sub parse_csv {
       }
     }
 
+    # Strip dashes from postcodes.
+    $datum->{postcode} =~ s/ ---//;
+
+    # Get Flickr data if appropriate.
     if ( $check_flickr && $datum->{flickr} ) {
       my $photo_url = $datum->{flickr};
 
