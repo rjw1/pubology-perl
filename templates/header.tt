@@ -16,7 +16,6 @@
   </script>
   <script type="text/javascript"
           src="[% base_url %]js/jquery.anystretch.min.js"></script>
-  <script type="text/javascript" src="[% base_url %]js/pubology.js"></script>
 
   [% IF do_map %]
     <script src="http://cdn.leafletjs.com/leaflet-0.3.1/leaflet.js"></script>
