@@ -13,7 +13,7 @@ PubSite::Pub->mk_accessors( qw( id name closed demolished alt_name date_built
                          pubs_galore bite
                          bite_2 qype dead_pubs london_eating time_out_rating
                          time_out other_link other_link_2 other_link_3
-                         gbg notes flickr ) );
+                         gbg notes sources references flickr ) );
 
 =head1 NAME
 

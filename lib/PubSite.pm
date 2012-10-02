@@ -62,7 +62,7 @@ sub parse_csv {
                          pubs_galore bite
                          bite_2 qype dead_pubs london_eating time_out_rating
                          time_out other_link other_link_2 other_link_3
-                         gbg notes flickr/ );
+                         gbg notes sources references flickr/ );
   my @data = $parser->read_file( $csv );
   @data = @data[ 1 .. $#data ]; # strip the headings
 
