@@ -43,7 +43,7 @@
   [% IF pub.alt_name %]
     <tr class="pub_former_name">
       <th>Former name(s):</th>
-      <td>[% pub.alt_name | html | replace( ';', '<br>' ) %]</td>
+      <td>[% pub.alt_name | replace( ';', 'LINEBREAK' ) | html | replace( 'LINEBREAK', '<br>' )%]</td>
     </tr>
   [% END %]
   [% IF pub.former_addr %]
@@ -138,5 +138,24 @@
     <a href="[% pub.flickr | html %]"><img class="pub_photo" src="[% pub.photo_url | html %]" width="[% pub.photo_width | html %]" height="[% pub.photo_height | html %]"></a>
   [% END %]
 </div>
+
+[% IF pub.sources OR pub.references %]
+  <div id="pub_sources_and_references">
+    <table>
+      [% IF pub.sources %]
+        <tr class="pub_sources">
+          <th>Sources:</th>
+          <td>[% pub.sources | replace( ';', 'LINEBREAK' ) | html | replace( 'LINEBREAK', '<br>' )%]</td>
+        </tr>
+      [% END %]
+      [% IF pub.references %]
+        <tr class="pub_references">
+          <th>References:</th>
+          <td>[% pub.references | replace( ';', 'LINEBREAK' ) | html | replace( 'LINEBREAK', '<br>' )%]</td>
+        </tr>
+      [% END %]
+    </table>
+  </div>
+[% END %]
 
 [% INCLUDE footer.tt %]
