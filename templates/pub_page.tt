@@ -108,7 +108,7 @@
         <li><a href="[% pub.qype | html %]">Qype</a></li>
       [% END %]
       [% IF pub.dead_pubs %]
-        <li><a href="[% pub.dead_pubs | html %]">Dead Pubs</a></li>
+        <li><a href="[% pub.dead_pubs | html %]">Pubs History</a></li>
       [% END %]
       [% IF pub.london_eating %]
         <li><a href="[% pub.london_eating | html %]">London Eating</a></li>
