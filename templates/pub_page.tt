@@ -137,6 +137,11 @@
   [% IF pub.photo_url %]
     <a href="[% pub.flickr | html %]"><img class="pub_photo" src="[% pub.photo_url | html %]" width="[% pub.photo_width | html %]" height="[% pub.photo_height | html %]"></a>
   [% END %]
+  <div id="pub_photo_date">
+    [% IF pub.photo_date %]
+      Photo taken in [% pub.photo_date | html %]
+    [% END %]
+  </div>
 </div>
 
 [% IF pub.sources OR pub.references %]
@@ -157,5 +162,10 @@
     </table>
   </div>
 [% END %]
+
+<div id="solicit_corrections">
+If you have any corrections or additions to make to this entry, please email
+<a href="mailto:pubologyblog@gmail.com?subject=[% 'Pub entry correction - ' _ pub.name _ ' (' _ pub.id _ ')' | uri %]">pubologyblog@gmail.com</a> quoting the pub's name ([% pub.name | html %]) and ID ([% pub.id | html %]).
+</div>
 
 [% INCLUDE footer.tt %]
