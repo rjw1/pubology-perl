@@ -165,7 +165,7 @@
 
 <div id="solicit_corrections">
 If you have any corrections or additions to make to this entry, please email
-<a href="mailto:pubologyblog@gmail.com?subject=[% 'Pub entry correction - ' _ pub.name _ ' (' _ pub.id _ ')' | uri %]">pubologyblog@gmail.com</a> quoting the pub's name ([% pub.name | html %]) and ID ([% pub.id | html %]).
+<a href="mailto:pubologyblog@gmail.com?subject=[% 'Pub entry correction - ' _ pub.name _ ' (' _ pub.id _ ')' | uri %]">pubologyblog@gmail.com</a> quoting the pub name.
 </div>
 
 [% INCLUDE footer.tt %]
