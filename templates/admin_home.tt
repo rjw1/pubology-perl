@@ -1,0 +1,10 @@
+[% INCLUDE header.tt subtitle = 'Admin' %]
+
+<ul>
+<li><a href="[% base_url %]admin/upload.cgi">Upload a CSV</a></li>
+<li><a href="[% edit_url %]?page=front">Edit front page</a></li>
+<li><a href="[% edit_url %]?page=notes">Edit notes page</a></li>
+<li><a href="[% edit_url %]?page=updates">Edit updates page</a></li>
+</ul>
+
+[% INCLUDE footer.tt %]

@@ -1,0 +1,7 @@
+[% is_admin_page = 1 %]
+[% INCLUDE header.tt subtitle = "$page page edited" %]
+
+<p><a href="[% base_url %]admin/edit-static-page.cgi?page=[% page %]">Edit it again</a>.</p>
+<p><a href="[% base_url %][% IF page != 'front' %][% page %].html[% END %]">View it</a>.</p>
+
+[% INCLUDE footer.tt %]

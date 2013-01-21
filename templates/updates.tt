@@ -1,0 +1,7 @@
+[% INCLUDE header.tt %]
+
+<div id="updates_page_text">
+  [% text %]
+</div>
+
+[% INCLUDE footer.tt %]
