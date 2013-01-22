@@ -1,0 +1,8 @@
+[% is_admin_page = 1 %]
+[% INCLUDE header.tt subtitle = 'Data upload complete' %]
+
+<p>[% succ_msg %]</p>
+<p><a href="[% base_url %]updates.html">View updates page</a>.</p>
+<p><a href="[% base_url %]admin/index.cgi">Return to admin home</a>.</p>
+
+[% INCLUDE footer.tt %]

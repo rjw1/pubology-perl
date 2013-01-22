@@ -1,7 +1,15 @@
-[% INCLUDE header.tt %]
+[% INCLUDE header.tt subtitle = "Site updates" %]
 
-<div id="updates_page_text">
-  [% text %]
+<div id="update_info">
+  <table id="update_info_table">
+    [% FOREACH update = updates %]
+      <tr class="update_info_row">
+        <td class="update_info_date">[% update.date | html %]</td>
+        <td class="update_info_change">[% update.change | html %]</td>
+        <td class="update_info_pubs">[% update.pubs_affected | html %]</td>
+      </tr>
+    [% END %]
+  </table>
 </div>
 
 [% INCLUDE footer.tt %]
