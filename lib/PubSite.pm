@@ -1,7 +1,10 @@
 package PubSite;
 use strict;
 
+use HTML::Entities;
+use HTML::TokeParser;
 use PubSite::Pub;
+use PubSite::Update;
 use Text::CSV::Simple;
 
 our $errstr;
@@ -18,7 +21,100 @@ A set of tools for turning Ewan's CSV files into a website.
 
 =over
 
+=item B<extract_html>
+
+Extracts a given div from a static HTML file.
+
+  my $current_text = PubSite->extract_html(
+    file => "/home/kake/index.html",
+    div_id => "front_page_text" );
+
+=cut
+
+sub extract_html {
+  my ( $class, %args )  = @_;
+
+  open( my $fh, "<", $args{file} ) || return 0;
+  my $parser = HTML::TokeParser->new( $fh );
+
+  my $current_text = "";
+  while ( my $token = $parser->get_tag( "div" ) ) {
+    my $attrs = $token->[1];
+    if ( $attrs->{id} eq $args{div_id} ) {
+      while ( my $bit = $parser->get_token ) {
+        if ( $bit->[0] eq "E" && $bit->[1] eq "div" ) {
+          last;
+        }
+        if ( $bit->[0] eq "S" ) {
+          if ( $bit->[1] eq "a" ) {
+            my $href = $bit->[2]->{href};
+            my $name = $bit->[2]->{name};
+            my $class = $bit->[2]->{class};
+            my $id = $bit->[2]->{id};
+            $current_text .= "<" . $bit->[1]
+                           . ( $href  ? " href=\"$href\"" : "" )
+                           . ( $name  ? " name=\"$name\"" : "" )
+                           . ( $class ? " class=\"$class\"" : "" )
+                           . ( $id    ? " id=\"$id\"" : "" )
+                           . ">";
+          } else {
+            $current_text .= "<" . $bit->[1] . ">";
+          }
+        } elsif ( $bit->[0] eq "E" ) {
+          $current_text .= "</" . $bit->[1] . ">";
+        } elsif ( $bit->[0] eq "T" ) {
+          $current_text .= $bit->[1];
+        }
+      }
+      last;
+    }
+  }
+
+  $current_text = encode_entities( $current_text );
+
+  # put linebreaks back
+  $current_text =~ s/&lt;br&gt;/\r\n/g;
+
+  # Strip leading and trailing whitespace.
+  $current_text =~ s/^\s+//;
+  $current_text =~ s/\s+$//;
+
+  return $current_text;
+}
+
+=item B<parse_updates_info_csv>
+
+Parses a CSV of update info.  Returns an array of PubSite:Update objects
+in the same order the CSV was in.
+
+  my @data = PubSite->parse_updates_info_csv ( file => "datafile.csv" );
+
+=cut
+
+sub parse_updates_info_csv {
+  my ( $class, %args )  = @_;
+
+  my $csv = $args{file} || die "No datafile supplied";
+
+  my $parser = Text::CSV::Simple->new({ binary => 1 });
+
+  $parser->field_map( qw/date change pubs_affected/ );
+  my @data = $parser->read_file( $csv );
+  @data = @data[ 1 .. $#data ]; # strip the headings
+
+  my @updates;
+
+  foreach my $datum ( @data ) {
+    my $update = PubSite::Update->new( %$datum );
+    push @updates, $update;
+  }
+
+  return @updates;
+}
+
 =item B<parse_csv>
+
+Parses a CSV of pubs.
 
   # If you want to check Flickr for photo URLs/heights/widths, you must
   # supply both key and secret.  If one or both is missing then check_flickr
