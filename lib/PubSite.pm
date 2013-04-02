@@ -3,6 +3,7 @@ use strict;
 
 use HTML::Entities;
 use HTML::TokeParser;
+use PubSite::Brewery;
 use PubSite::Pub;
 use PubSite::Update;
 use Text::CSV::Simple;
@@ -84,7 +85,7 @@ sub extract_html {
 
 =item B<parse_updates_info_csv>
 
-Parses a CSV of update info.  Returns an array of PubSite:Update objects
+Parses a CSV of update info.  Returns an array of PubSite::Update objects
 in the same order the CSV was in.
 
   my @data = PubSite->parse_updates_info_csv ( file => "datafile.csv" );
@@ -110,6 +111,90 @@ sub parse_updates_info_csv {
   }
 
   return @updates;
+}
+
+=item B<parse_breweries_csv>
+
+Parses a CSV of breweries.
+
+  my %data = PubSite->parse_breweries_csv( file => "datafile.csv" );
+
+Returns a hash:
+
+=over
+
+=item breweries - ref to an array of PubSite::Brewery objects;
+
+=item min_lat, max_lat, min_long, max_long - scalars
+
+=back
+
+=cut
+
+sub parse_breweries_csv {
+  my ( $class, %args )  = @_;
+
+  my $csv = $args{file} || die "No datafile supplied";
+
+  my $parser = Text::CSV::Simple->new({ binary => 1 });
+
+  $parser->field_map( qw/id name addr_num addr_street postcode dates_open
+      dates_building closed demolished os_x os_y location_accurate
+      former_names former_address website twitter rgl quaffale flickr notes
+      sources/ );
+  my @data = $parser->read_file( $csv );
+  @data = @data[ 1 .. $#data ]; # strip the headings
+
+  @data = sort { $a->{name} cmp $b->{name} } @data;
+
+  my @breweries;
+  my ( $min_lat, $max_lat, $min_long, $max_long );
+
+  foreach my $datum ( @data ) {
+    # Sort out the Booleans.
+    foreach my $key ( qw( closed demolished location_accurate ) ) {
+      if ( $datum->{$key} eq "TRUE" ) {
+        $datum->{$key} = 1;
+      } else {
+        $datum->{$key} = 0;
+      }
+    }
+
+    # Strip dashes from postcodes.
+    $datum->{postcode} =~ s/ ---//;
+
+    my $brewery = PubSite::Brewery->new( %$datum );
+    push @breweries, $brewery;
+
+    if ( $brewery->not_on_map ) {
+      next;
+    }
+
+    my ( $lat, $long ) = $brewery->lat_and_long;
+
+    if ( !defined $min_lat ) {
+      $min_lat = $max_lat = $lat;
+    } elsif ( $lat < $min_lat ) {
+      $min_lat = $lat;
+    } elsif ( $lat > $max_lat ) {
+      $max_lat = $lat;
+    }
+    if ( !defined $min_long ) {
+      $min_long = $max_long = $long;
+    } elsif ( $long < $min_long ) {
+      $min_long = $long;
+    } elsif ( $long > $max_long ) {
+      $max_long = $long;
+    }
+  }
+
+  return (
+           breweries => \@breweries,
+           min_lat   => $min_lat,
+           max_lat   => $max_lat,
+           min_long  => $min_long,
+           max_long  => $max_long,
+         );
 }
 
 =item B<parse_csv>
