@@ -66,6 +66,9 @@
     </ul>
 
     <ul id="meta_links">
+      <li id="key_link">
+        <a href="[% base_url %]key.html">Key</a>
+      </li>
       <li id="updates_info_link">
         <a href="[% base_url %]updates.html">Updates</a>
       </li>
