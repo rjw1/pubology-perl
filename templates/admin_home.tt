@@ -6,7 +6,7 @@
 <li><a href="[% base_url %]admin/upload-updates-info.cgi">Upload a CSV of
     updates info</a></li>
 <li><a href="[% edit_url %]?page=front">Edit front page</a></li>
-<li><a href="[% edit_url %]?page=notes">Edit notes page</a></li>
+<li><a href="[% edit_url %]?page=key">Edit key page</a></li>
 </ul>
 
 [% INCLUDE footer.tt %]
