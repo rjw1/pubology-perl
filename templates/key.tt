@@ -1,6 +1,6 @@
 [% INCLUDE header.tt %]
 
-<div id="notes_page_text">
+<div id="key_page_text">
   [% text %]
 </div>
 
