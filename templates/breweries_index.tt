@@ -1,0 +1,50 @@
+[% USE CGI %]
+
+[% subtitle = 'London breweries' %]
+[% INCLUDE header.tt %]
+
+<p>Listed below are all the currently active London breweries (marked
+in green).  Further information about the breweries is shown on the <a
+href="[% map_url %]">map view</a>.  If any are missing, or if any
+details are incorrect, please <a
+href="mailto:pubologyblog@gmail.com">contact me via e-mail</a>.
+Information about closed and demolished breweries is still being
+updated.  See also <a href="http://desdemoor.co.uk/london/brewers-and-beers/">Des De Moor's list of London brewers</a>.</p>
+
+<div id="pub_list_no_map">
+
+  <div class="pub_table_key">
+    <table>
+      <tr><th class="status open"><span>O</span></th><td>= open</td></tr>
+      <tr><th class="status closed"><span>C</span></th><td>= closed</td></tr>
+      <tr><th class="status demolished"><span>D</span></th>
+          <td>= demolished</td></tr>
+    </table>
+  </div>
+
+  <p>London breweries (<a href="[% map_url %]">view them on a map</a>):</p>
+
+  <table class="postal_district_pub_list">
+    <tr>
+      <th></th><th>Name</th><th>Address</th><th>Years active</th>
+    </tr>
+    [% FOREACH brewery = breweries %]
+      <tr>
+        [% IF brewery.demolished %]
+          <td class="status demolished"><span>D</span></td>
+        [% ELSIF brewery.closed %]
+          <td class="status closed"><span>C</span></td>
+        [% ELSE %]
+          <td class="status open"><span>O</span></td>
+        [% END %]
+        <td>[% brewery.name | html %]</td>
+        <td>[% brewery.address | html %]</td>
+        <td>[% IF brewery.dates_open %][% brewery.dates_open | html %][% END %]</td>
+      </tr>
+    [% END %]
+  </table>
+</div>
+
+<p>Last updated at [% updated | html %].</p>
+
+[% INCLUDE footer.tt %]

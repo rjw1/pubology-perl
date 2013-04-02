@@ -1,0 +1,26 @@
+[% is_admin_page = 1 %]
+[% INCLUDE header.tt subtitle = 'Upload breweries' %]
+
+[% IF errmsg %]
+  <div class="upload_error">
+    <p>ERROR:</p>
+    [% errmsg %]
+    <p>(If you don't understand this error message, please report it as a
+    bug, including the full text of the message.)</p>
+  </div>
+[% END %]
+
+<h3>Upload a CSV file of breweries</h3>
+
+<form method="post" enctype="multipart/form-data"
+      action="[% cgi_url %]" onSubmit="return reassure()">
+
+  <p>CSV file: <input type="file" name="csv" size="80" /></p>
+
+  <p><input type="submit" name="Upload" value="Upload" /></p>
+
+  <p id="upload_msg"></p>
+
+</form>
+
+[% INCLUDE footer.tt %]

@@ -1,0 +1,60 @@
+[% USE CGI %]
+[% USE JSON ( convert_blessed => 1, allow_blessed => 1 ) %]
+
+[% do_map = 1 %]
+[% subtitle = 'London breweries' %]
+[% INCLUDE header.tt %]
+
+<div id="map_canvas"></div>
+
+<div id="pub_list">
+
+  <div id="map_key">
+  <p>green = open, yellow = closed, red = demolished</p>
+  </div>
+
+  <p>London breweries (<a href="[% index_url %]">view without a map</a>):</p>
+  <ul>
+    [% i = 0 %]
+    [% FOREACH brewery = breweries %]
+      [% i = i + 1 %]
+      [% IF brewery.demolished %]
+        <li class="demolished">
+      [% ELSIF brewery.closed %]
+        <li class="closed">
+      [% ELSE %]
+        <li class="open">
+      [% END %]
+        <span>
+        [% IF brewery.not_on_map %]
+          [% CGI.escapeHTML( brewery.name ) %] (not on map)
+        [% ELSE %]
+          <a href="#" onclick="return show_marker( [% i %] )">[% CGI.escapeHTML( brewery.name ) %]</a>
+        [% END %]
+        </span>
+      </li>
+    [% END %]
+  </ul>
+
+  <p>Last updated at [% updated | html %].</p>
+
+</div>
+
+<script type="text/javascript">
+
+  centre_lat = [% centre_lat %];
+  centre_long = [% centre_long %];
+  map_type = 'brewery';
+
+  function add_markers() {
+    var brewery;
+    [% i = 0 %]
+    [% FOREACH brewery = breweries %]
+      [% i = i + 1 %]
+      brewery = [% brewery.json %];
+      add_marker( [% i %], brewery, 'brewery' );
+    [% END %]
+  }
+</script>
+
+[% INCLUDE footer.tt %]

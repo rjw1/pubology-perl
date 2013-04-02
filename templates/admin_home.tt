@@ -2,6 +2,7 @@
 
 <ul>
 <li><a href="[% base_url %]admin/upload.cgi">Upload a CSV of pubs</a></li>
+<li><a href="[% base_url %]admin/upload-breweries.cgi">Upload a CSV of breweries</a></li>
 <li><a href="[% base_url %]admin/upload-updates-info.cgi">Upload a CSV of
     updates info</a></li>
 <li><a href="[% edit_url %]?page=front">Edit front page</a></li>
