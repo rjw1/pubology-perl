@@ -50,6 +50,12 @@
       [% END %]
     </ul>
 
+    <ul id="breweries_links">
+      <li id="brewery_index_link">
+        <a href="[% base_url %]breweries.html">Breweries</a>
+      </li>
+    </ul>
+
     <ul id="external_links">
       <li id="blog_link">
         <a href="http://pubology.wordpress.com/">Blog</a>
