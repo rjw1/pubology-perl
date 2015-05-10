@@ -7,6 +7,7 @@ use PubSite::Brewery;
 use PubSite::Pub;
 use PubSite::Update;
 use Text::CSV::Simple;
+use YAML::XS;
 
 our $errstr;
 
@@ -235,6 +236,8 @@ sub parse_csv {
     $check_flickr = 0;
   }
 
+  my $cache_dir = $args{cache_dir} || "";
+
   my $parser = Text::CSV::Simple->new({ binary => 1 });
 
   $parser->field_map( qw/id name closed demolished addr_num addr_street
@@ -252,6 +255,23 @@ sub parse_csv {
   my @pubs;
   my ( $min_lat, $max_lat, $min_long, $max_long );
 
+  # If we're checking Flickr for photo info, load in any cached data.
+  my ( $flickr_api, $flickr_file, %flickr_cache );
+  if ( $check_flickr ) {
+    die "cache_dir not set in call to parse_datafile" unless $cache_dir;
+    unless ( -e $cache_dir || mkdir $cache_dir ) {
+      die "Can't create cache directory $cache_dir: $!";
+    }
+
+    $flickr_api = Flickr::API2->new({ key    => $flickr_key,
+                                      secret => $flickr_secret });
+
+    $flickr_file = File::Spec->catfile( $cache_dir, "flickr_data.yaml" );
+    if ( -e $flickr_file ) {
+      %flickr_cache = YAML::XS::LoadFile( $flickr_file );
+    }
+  }
+
   foreach my $datum ( @data ) {
     # Sort out the Booleans.
     foreach my $key ( qw( closed demolished location_accurate ) ) {
@@ -267,43 +287,70 @@ sub parse_csv {
 
     # Get Flickr data if appropriate.
     if ( $check_flickr && $datum->{flickr} ) {
+      my @data_needed = qw( photo_url photo_width photo_height photo_date );
       my $photo_url = $datum->{flickr};
 
       my ( $user_id, $photo_id ) =
                           $photo_url =~ m{flickr.com/photos/([\d\@N]+)/(\d+)};
 
-      my $flickr_api = Flickr::API2->new({
-                         key    => $flickr_key,
-                         secret => $flickr_secret,
-                       });
-
-      # Get the right size.
-      my $size_data = $flickr_api->execute_method(
-                      "flickr.photos.getSizes", { photo_id => $photo_id } );
-      my @images = @{ $size_data->{sizes}{size} };
-
-      foreach my $image ( @images ) {
-        if ( $image->{label} eq "Medium" ) {
-          $datum->{photo_url} = $image->{source};
-          $datum->{photo_width} = $image->{width};
-          $datum->{photo_height} = $image->{height};
-          last;
+      # If we have cached data for this photo ID, just use that.
+      my $cached_data = $flickr_cache{$photo_id};
+      my $got_data = 0;
+      if ( $cached_data ) {
+        foreach my $key ( @data_needed ) {
+          if ( $cached_data->{$key} ) {
+            $datum->{$key} = $cached_data->{$key};
+            $got_data++;
+          }
         }
       }
 
-      # Get the creation date.
-      my $exif_data = $flickr_api->execute_method(
-                      "flickr.photos.getExif", { photo_id => $photo_id } );
-      my @tags = @{ $exif_data->{photo}{exif} };
-      foreach my $tag ( @tags ) {
-        if ( $tag->{label} eq "Date and Time (Digitized)" ) {
-          my ( $date, $time ) = split( /\s+/, $tag->{raw}{_content} );
-          my ( $year, $month, $day ) = split( ":", $date );
-          my @months = qw( January February March April May June July August
-                           September October November December );
-          $datum->{photo_date} = $months[$month - 1] . " " . $year;
-          last;
+      if ( $got_data == scalar @data_needed ) {
+        # OK, got it all.
+      } else {
+        # We don't have all the cached data, so go and talk to Flickr.
+
+        my $flickr_api = Flickr::API2->new({
+                           key    => $flickr_key,
+                           secret => $flickr_secret,
+                         });
+
+        # Get the right size.
+        my $size_data = $flickr_api->execute_method(
+                        "flickr.photos.getSizes", { photo_id => $photo_id } );
+        my @images = @{ $size_data->{sizes}{size} };
+
+        foreach my $image ( @images ) {
+          if ( $image->{label} eq "Medium" ) {
+            $datum->{photo_url} = $image->{source};
+            $datum->{photo_width} = $image->{width};
+            $datum->{photo_height} = $image->{height};
+            last;
+          }
         }
+
+        # Get the creation date.
+        my $exif_data = $flickr_api->execute_method(
+                        "flickr.photos.getExif", { photo_id => $photo_id } );
+        my @tags = @{ $exif_data->{photo}{exif} };
+        foreach my $tag ( @tags ) {
+          if ( $tag->{label} eq "Date and Time (Digitized)" ) {
+            my ( $date, $time ) = split( /\s+/, $tag->{raw}{_content} );
+            my ( $year, $month, $day ) = split( ":", $date );
+            my @months = qw( January February March April May June July August
+                             September October November December );
+            $datum->{photo_date} = $months[$month - 1] . " " . $year;
+            last;
+          }
+        }
+
+        # OK, we got the data from Flickr - now cache it.
+        my $cached_data = {};
+        $flickr_cache{$photo_id} = $cached_data;
+        foreach my $key ( @data_needed ) {
+          $cached_data->{$key} = $datum->{$key};
+        }
+        $flickr_cache{$photo_id} = $cached_data;
       }
     }
 
@@ -330,6 +377,11 @@ sub parse_csv {
     } elsif ( $long > $max_long ) {
       $max_long = $long;
     }
+  }
+
+  # Write out any cached Flickr data.
+  if ( $flickr_file ) {
+    YAML::XS::DumpFile( $flickr_file, %flickr_cache );
   }
 
   return (
