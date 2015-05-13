@@ -120,7 +120,7 @@
         <li><a href="[% pub.other_link_2 | html %]">Other link 2</a></li>
       [% END %]
       [% IF pub.other_link_3 %]
-        <li><a href="[% pub.other_link_3 | html %]">Other link 3</a></li>
+        <li><a href="[% pub.other_link_3 | html %]">WhatPub entry</a></li>
       [% END %]
     </ul></td></tr>
   [% END %]
